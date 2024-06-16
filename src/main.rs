@@ -1,5 +1,5 @@
+use zksync_verifier::utils::{get_proof, G1Point, Proof};
 use zksync_verifier::verifier::verify;
-use zksync_verifier::utils::{G1Point, Proof, get_proof};
 
 fn main() {
     verify();

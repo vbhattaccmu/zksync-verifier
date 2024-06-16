@@ -1,7 +1,5 @@
-pub use crate::utils::{
-    get_omegas, get_proof, get_pubSignals, Omegas, Proof, ProofWithPubSignal,
-};
 use crate::utils::VerificationKey;
+pub use crate::utils::{get_omegas, get_proof, get_pubSignals, Omegas, Proof, ProofWithPubSignal};
 use ark_bn254::{g1::Parameters, Bn254, Fq, FqParameters, Fr, FrParameters};
 use ark_bn254::{g2, Fq2, Fq2Parameters, G2Affine};
 use ark_ec::group::Group;
@@ -102,9 +100,8 @@ fn add_assign_lookup_linearisation_contribution_with_v(
     state_opening_1_z: Fr,
     state_opening_2_z: Fr,
     proof: Proof,
-    pvs: PartialVerifierState
+    pvs: PartialVerifierState,
 ) -> (Fr, Fr) {
-
     let state_power_of_alpha_6 = pvs.power_of_alpha_6;
     let state_power_of_alpha_7 = pvs.power_of_alpha_7;
     let state_power_of_alpha_8 = pvs.power_of_alpha_8;
@@ -120,7 +117,8 @@ fn add_assign_lookup_linearisation_contribution_with_v(
     let proof_lookup_selector_poly_opening_at_z = proof.lookup_selector_poly_opening_at_z;
     let state_gamma_lookup = pvs.gamma_lookup;
     let state_beta_plus_one = pvs.beta_plus_one;
-    let proof_lookup_grand_product_opening_at_z_omega = proof.lookup_grand_product_opening_at_z_omega;
+    let proof_lookup_grand_product_opening_at_z_omega =
+        proof.lookup_grand_product_opening_at_z_omega;
     // check is this assignment even correct ??
     let mut factor = proof_lookup_grand_product_opening_at_z_omega;
     factor = factor.mul(state_power_of_alpha_6);
@@ -186,7 +184,8 @@ fn add_assign_permutation_linearisation_contribution_with_v(
     let state_gamma = pvs.gamma;
     let state_v_slot = pvs.v;
 
-    let proof_copy_permutation_grand_product_opening_at_z_omega = proof.copy_permutation_grand_product_opening_at_z_omega;
+    let proof_copy_permutation_grand_product_opening_at_z_omega =
+        proof.copy_permutation_grand_product_opening_at_z_omega;
     let proof_copy_permutation_polys_0_opening_at_z = proof.copy_permutation_polys_0_opening_at_z;
     let proof_copy_permutation_polys_1_opening_at_z = proof.copy_permutation_polys_1_opening_at_z;
     let proof_copy_permutation_polys_2_opening_at_z = proof.copy_permutation_polys_2_opening_at_z;
@@ -221,7 +220,6 @@ fn add_assign_permutation_linearisation_contribution_with_v(
 
     let state_l_0_at_z = pvs.l_0_at_z;
     println!("State L 0 at Z: {:?}", state_l_0_at_z.to_string());
-
 
     factor = factor.add(state_l_0_at_z.mul(state_power_of_alpha_5));
     factor = factor.mul(state_v_slot);
@@ -338,7 +336,7 @@ fn main_gate_linearisation_contribution_with_v(
 
     // proof value
     let proof_state_polys_3_opening_at_z_omega_slot = proof.state_poly_3_opening_at_z_omega;
-    
+
     // proof value
     let proof_gate_selectors_0_opening_at_z = proof.gate_selectors_0_opening_at_z;
 
@@ -444,7 +442,7 @@ fn prepare_queries(
         state_opening_2_z,
         state_opening_3_z,
         proof.clone(),
-        pvs.clone()
+        pvs.clone(),
     );
 
     println!("Queries at Z 1 x Slot: {:?}", queries_at_z_1.x.to_string());
@@ -458,7 +456,7 @@ fn prepare_queries(
         state_opening_3_z,
         vk_gate_selectors_1_affine,
         proof.clone(),
-        pvs.clone()
+        pvs.clone(),
     );
 
     println!(" Queries at Z 1 x Slot: {:?}", queries_at_z_1.x.to_string());
@@ -474,7 +472,7 @@ fn prepare_queries(
         state_opening_3_z,
         vk_permutation_3_affine,
         proof.clone(),
-        pvs.clone()
+        pvs.clone(),
     );
 
     queries_at_z_1 = resp.0;
@@ -493,7 +491,7 @@ fn prepare_queries(
         state_opening_1_z,
         state_opening_2_z,
         proof.clone(),
-        pvs.clone()
+        pvs.clone(),
     );
 
     let state_eta = pvs.eta;
@@ -818,7 +816,8 @@ fn prepare_aggregated_commitment(
         .add(copy_permutation_first_aggregated_commitment_coeff);
 
     let proof_copy_permutation_grand_product_affine = proof.copy_permutation_grand_product;
-    let proof_copy_permutation_grand_product_opening_at_z_omega = proof.copy_permutation_grand_product_opening_at_z_omega;
+    let proof_copy_permutation_grand_product_opening_at_z_omega =
+        proof.copy_permutation_grand_product_opening_at_z_omega;
 
     let mut aggregated_z_omega = proof_copy_permutation_grand_product_affine
         .mul(copy_permutation_coeff)
@@ -920,7 +919,8 @@ fn prepare_aggregated_commitment(
         aggregation_challenge.to_string()
     );
 
-    let proof_lookup_grand_product_opening_at_z_omega = proof.lookup_grand_product_opening_at_z_omega;
+    let proof_lookup_grand_product_opening_at_z_omega =
+        proof.lookup_grand_product_opening_at_z_omega;
     let proof_lookup_t_poly_opening_at_z_omega = proof.lookup_t_poly_opening_at_z_omega;
     update_agg_challenge = update_aggregation_challenge_second(
         proof_lookup_grand_product_affine,
@@ -1408,7 +1408,10 @@ pub fn get_challenges(pvs: &mut PartialVerifierState) {
     pvs.beta_lookup = get_fr_from_u8arr(beta_lookuppp.to_vec());
     pvs.gamma_lookup = get_fr_from_u8arr(gamma_lookuppp.to_vec());
     pvs.beta_plus_one = pvs.beta_lookup.add(Fr::from_str("1").unwrap());
-    pvs.beta_gamma_plus_gamma = pvs.beta_lookup.add(Fr::from_str("1").unwrap()).mul(pvs.gamma_lookup);
+    pvs.beta_gamma_plus_gamma = pvs
+        .beta_lookup
+        .add(Fr::from_str("1").unwrap())
+        .mul(pvs.gamma_lookup);
     pvs.v = get_fr_from_u8arr(vv.to_vec());
     pvs.u = get_fr_from_u8arr(uu.to_vec());
     pvs.z = get_fr_from_u8arr(zz.to_vec());
@@ -1468,4 +1471,3 @@ pub fn apply_fr_mask(out: Vec<u8>) -> Vec<u8> {
 
     res_fr.to_vec()
 }
-
